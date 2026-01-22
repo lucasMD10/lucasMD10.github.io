@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pedido Especial </title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      color: white;
+    }
+
+    /* Corações neon de fundo */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ff2fdc;
+      transform: rotate(45deg);
+      animation: float 8s linear infinite;
+      box-shadow: 0 0 10px #ff2fdc, 0 0 20px #ff2fdc;
+    }
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ff2fdc;
+      border-radius: 50%;
+    }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: -10px; top: 0; }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(45deg); opacity: 0; }
+    }
+
+    /* Conteúdo principal */
+    .container {
+      position: absolute;
+      top: 20%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow: 0 0 10px #ff2fdc;
+    }
+
+    .buttons {
+      position: relative;
+      width: 300px;
+      height: 200px;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    #yes {
+      background: #00ff9c;
+      box-shadow: 0 0 15px #00ff9c;
+    }
+
+    #no {
+      position: absolute;
+      background: #ff0033;
+      box-shadow: 0 0 15px #ff0033;
+      left: 150px;
+      top: 100px;
+    }
+
+    /* Tela final */
+    .final {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 3rem;
+      color: #00ff9c;
+      text-shadow: 0 0 20px #00ff9c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="main">
+    <h1>Quer namorar comigo?</h1>
+    <div class="buttons">
+      <button id="yes">Sim</button>
+      <button id="no">Não</button>
+    </div>
+  </div>
+
+  <div class="final" id="final">
+    AGORA VOCÊ ESTÁ NAMORANDO COMIGO<br>VAMOOOOO 
+  </div>
+
+  <script>
+    // Corações animados
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = 5 + Math.random() * 5 + 's';
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 10000);
+    }
+    setInterval(createHeart, 400);
+    const noBtn = document.getElementById('no');
+const container = document.querySelector('.buttons');
+
+// posições fixas dentro do container
+const positions = [
+  { x: 10, y: 10 },   // topo esquerdo
+  { x: 180, y: 10 },  // topo direito
+  { x: 10, y: 130 },  // baixo esquerdo
+  { x: 180, y: 130 }  // baixo direito
+];
+
+let currentIndex = 0;
+
+// posiciona o botão
+function moveTo(index) {
+  noBtn.style.left = positions[index].x + 'px';
+  noBtn.style.top = positions[index].y + 'px';
+  currentIndex = index;
+}
+
+// escolhe uma posição DIFERENTE da atual
+function fugirDoNao() {
+  let nextIndex;
+  do {
+    nextIndex = Math.floor(Math.random() * positions.length);
+  } while (nextIndex === currentIndex);
+
+  moveTo(nextIndex);
+}
+
+// foge quando o mouse chega perto
+container.addEventListener('mousemove', (e) => {
+  const rect = noBtn.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  const distX = Math.abs(e.clientX - centerX);
+  const distY = Math.abs(e.clientY - centerY);
+
+  if (distX < 80 && distY < 50) {
+    fugirDoNao();
+  }
+});
+
+// posição inicial
+moveTo(0);
+
+
+
+
+    // Botão SIM
+    document.getElementById('yes').addEventListener('click', () => {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('final').style.display = 'flex';
+    });
+  </script>
+
+</body>
+</html>
